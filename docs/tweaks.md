@@ -88,6 +88,18 @@ Shared:
                   command's ESP request gets overrideRestrictions before the core receives it; other restrictions
                   and commands stay as Spotify supplied them. The hooks install together only when the expected
                   runtime signatures match. Checked by harness/radio-modes/; its README records device evidence.
+    AlbumQueue/   With Spoof Premium on, adds Add to Queue to an album page's header menu when Spotify leaves
+                  that row out, under either look. The Creative Work page's template.creativeWork.uri is read
+                  by named Swift reflection and checked against the header's menu button; a track menu is
+                  never inferred from the page it happens to be on. Native marks the header button just before
+                  UIKit dispatches its registered touch-up or primary action (target/selector or UIAction);
+                  the redesign marks the original button before its pinned mirror fires it. One marker is
+                  consumed by one menu. Spotify's context resolver supplies the ordered track URIs, including
+                  repeats, then SPTPlayerQueueWrapperImpl's queueMultipleTracks:loggingParams: submits them
+                  with Spotify's own queue handling. Account attributes and restrictions are unchanged.
+                  A missing page or malformed response fails before submission; paginated answers are
+                  currently rejected rather than queueing part of an album. Checked by harness/album-queue/;
+                  Spotify 9.1.90 simulator evidence and the remaining device checks are in its README.
     Privacy/      telemetry blocking and its counters, and the tracking taken off shared open.spotify.com links
                   (CleanLinks.x over the cleaner in CleanLinks.m)
     ArtistBlock/  tracks by blocked artists skipped as they start (ArtistSkip.x), the list and the Blocked artists page under Player
