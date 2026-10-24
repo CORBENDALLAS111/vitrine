@@ -50,8 +50,15 @@ jobs:
       - uses: actions/upload-artifact@v5
         if: inputs.upload_method != 'filebin'
         with:
-          name: vitrine.ipa
+          name: vitrine-ipa
           path: out/*.ipa
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v5
+        if: inputs.upload_method != 'filebin'
+        with:
+          name: vitrine-deb
+          path: tweak/packages/*.deb
           if-no-files-found: error
 
       - name: Upload to filebin.net
@@ -59,7 +66,7 @@ jobs:
         run: |
           BIN="vitrine-${{ github.run_id }}"
           echo "### filebin.net download" >> "$GITHUB_STEP_SUMMARY"
-          for f in out/*.ipa; do
+          for f in out/*.ipa tweak/packages/*.deb; do
             curl -fsS -X POST -H "Content-Type: application/octet-stream" --data-binary "@$f" "https://filebin.net/$BIN/$(basename "$f")" >/dev/null
             echo "- https://filebin.net/$BIN/$(basename "$f")" >> "$GITHUB_STEP_SUMMARY"
           done
